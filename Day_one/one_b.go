@@ -7,9 +7,17 @@ import (
 	"strconv"
 )
 
+func calculate(n int)int{
+	n = n/3 -2
+	if n<=0{
+		return 0
+	}
+	return n + calculate(n)
+}
+
 func main(){
 	var sum int
-	var riga string = "start"
+	var riga string
 	sc := bufio.NewScanner(os.Stdin)
 	for {
 		sc.Scan()
@@ -22,14 +30,4 @@ func main(){
 		sum+=n
 	}
 	fmt.Println(sum)
-}
-
-func calculate(n int)int{
-	n/=3
-	n-=2
-	if n<=0{
-		return 0
-	}
-	return n + calculate(n)
-	
 }
