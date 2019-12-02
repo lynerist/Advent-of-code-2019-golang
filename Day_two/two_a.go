@@ -19,7 +19,8 @@ func main() {
 		n, _ := strconv.Atoi(s)
 		num = append(num, n)
 	}
-
+	num[1] = 12
+	num[2] = 2
 	for i := 0; ; i += 4 {
 		a := num[num[i+1]]
 		b := num[num[i+2]]
