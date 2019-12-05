@@ -21,9 +21,9 @@ func main(){
 	}
 
 	instructions = append(instructions, 0, 0)
-	var numberInstructions int
+	var programCounter int
 
-	for programCounter := 0 ; programCounter > -1; programCounter += numberInstructions{
+	for programCounter > -1 {
 		opCode := instructions[programCounter]%100
 		parameters := fmt.Sprintf("%.2d", instructions[programCounter]/100)
 
@@ -39,20 +39,19 @@ func main(){
 		switch opCode{
 		case 1:
 			instructions[instructions[programCounter+3]] = a + b
-			numberInstructions = 4
+			programCounter += 4	//Number of instructions
 		case 2:
 			instructions[instructions[programCounter+3]] = a * b
-			numberInstructions = 4
+			programCounter += 4	//Number of instructions
 		case 3:
 			sc.Scan()
 			instructions[instructions[programCounter+1]], _ = strconv.Atoi(sc.Text())
-			numberInstructions = 2
+			programCounter += 2	//Number of instructions
 		case 4:
 			fmt.Println(instructions[instructions[programCounter+1]])
-			numberInstructions = 2
+			programCounter += 2	//Number of instructions
 		case 99:
 			programCounter = -1
-			numberInstructions = 0
 		default:
 			fmt.Println("Error at instruction number ", programCounter)
 		}
