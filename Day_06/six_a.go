@@ -1,20 +1,20 @@
 package main
 
-import(
+import (
 	"bufio"
-	"os"
 	"fmt"
+	"os"
 	"strconv"
 )
 
-func main(){
+func main() {
 	sc := bufio.NewScanner(os.Stdin)
-	
+
 	var input []string
 
 	for {
 		sc.Scan()
-		if sc.Text() == ""{
+		if sc.Text() == "" {
 			break
 		}
 		input = append(input, sc.Text())
@@ -22,22 +22,22 @@ func main(){
 
 	orbits := make(map[string]string)
 
-	for _, orbit := range input{
+	for _, orbit := range input {
 		mass := orbit[:3]
 		moon := orbit[4:]
 		orbits[moon] = mass
 	}
-	
+
 	var countOrbits int
 
-	for k := range orbits{
+	for k := range orbits {
 		var countOrbitsK int
 		currentOrbit := k
 		for {
-			if currentOrbit == "COM"{
+			if currentOrbit == "COM" {
 				break
 			}
-			if len(currentOrbit) == 4{
+			if len(currentOrbit) == 4 {
 				orbitsAlreadyCounted, _ := strconv.Atoi(currentOrbit)
 				countOrbitsK += orbitsAlreadyCounted
 				break
@@ -46,7 +46,7 @@ func main(){
 			currentOrbit = orbits[currentOrbit]
 		}
 		countOrbits += countOrbitsK
-		if  currentOrbit != "COM"{
+		if currentOrbit != "COM" {
 			orbits[k] = fmt.Sprintf("%.4d", countOrbitsK)
 		}
 	}
