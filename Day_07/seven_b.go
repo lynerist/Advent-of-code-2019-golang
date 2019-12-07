@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-
+	// We get the input with a scanner (you can do "file.go < input.txt")
 	sc := bufio.NewScanner(os.Stdin)
 	sc.Scan()
 	slice := strings.Split(sc.Text(), ",")
@@ -20,6 +20,7 @@ func main() {
 	}
 	instructions = append(instructions, 0, 0)
 
+	// The number of combinations of 5 elements is the factorial 5! so we need 5! elements
 	const factorialNumberPhase = 5 * 4 * 3 * 2
 	var combinations []string
 	for i := 0; len(combinations) < factorialNumberPhase; i++ {
@@ -28,6 +29,7 @@ func main() {
 			combination = "0" + combination
 		}
 
+		// We check that every digit compare at least one time (so just one time)
 		var countDigit [5]bool
 		for _, digit := range combination {
 			countDigit[digit-'0'] = true
@@ -43,28 +45,30 @@ func main() {
 		}
 	}
 
+	// We try each combination
 	var maxSignal int
 	for _, combination := range combinations {
+		// We need a software and a pc for each amplifier because it has to keep going without changes until the halt,
+		// When we switch amplifier we just pause it's software (like a sleeping process in the OS)
 		var amplifierSoftware [][]int
 		for i := 0; i < 5; i++ {
 			program := make([]int, len(instructions))
 			copy(program, instructions)
 			amplifierSoftware = append(amplifierSoftware, program)
 		}
-
 		programCounters := make([]int, 5)
+
 		var signal int
-		for loop := 0; ; loop++ {
+		for loop := 0; programCounters[4] != -1; loop++ {
+			//Here starts the feedback loop, at the first iteration we have to pass to the software also the phase,
+			//otherwise we just have to pass him the current signal
 			for amplifier, phase := range combination {
-				// I need new phases so I add 5 and the range change from [0-4] to [5-9]
 				if loop == 0 {
+					// We need new phases so we add 5 and the range change from [0-4] to [5-9]
 					signal, programCounters[amplifier] = software(amplifierSoftware[amplifier], []int{int(phase - '0' + 5), signal}, programCounters[amplifier])
 				} else {
 					signal, programCounters[amplifier] = software(amplifierSoftware[amplifier], []int{signal}, programCounters[amplifier])
 				}
-			}
-			if programCounters[4] == -1 {
-				break
 			}
 		}
 
@@ -102,10 +106,12 @@ func software(instructions []int, input []int, programCounter int) (int, int) {
 			instructions[instructions[programCounter+3]] = a * b
 			programCounter += 4 //Number of instructions
 		case 3:
+			//If input is empty we have to stop the software and start the next amplifier
 			if len(input) == 0 {
 				output, _ := strconv.Atoi(outputString)
 				return output, programCounter
 			}
+			
 			instructions[instructions[programCounter+1]] = input[0]
 			programCounter += 2 //Number of instructions
 			input = input[1:]
