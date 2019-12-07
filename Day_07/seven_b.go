@@ -45,10 +45,27 @@ func main() {
 
 	var maxSignal int
 	for _, combination := range combinations {
+		var amplifierSoftware [][]int
+		for i := 0; i < 5; i++ {
+			program := make([]int, len(instructions))
+			copy(program, instructions)
+			amplifierSoftware = append(amplifierSoftware, program)
+		}
 
+		programCounters := make([]int, 5)
 		var signal int
-		for _, phase := range combination {
-			signal = software(instructions, []int{int(phase - '0'), signal})
+		for loop := 0; ; loop++ {
+			for amplifier, phase := range combination {
+				// I need new phases so I add 5 and the range change from [0-4] to [5-9]
+				if loop == 0 {
+					signal, programCounters[amplifier] = software(amplifierSoftware[amplifier], []int{int(phase - '0' + 5), signal}, programCounters[amplifier])
+				} else {
+					signal, programCounters[amplifier] = software(amplifierSoftware[amplifier], []int{signal}, programCounters[amplifier])
+				}
+			}
+			if programCounters[4] == -1 {
+				break
+			}
 		}
 
 		if signal > maxSignal {
@@ -58,12 +75,9 @@ func main() {
 	fmt.Println(maxSignal)
 }
 
-func software(program []int, input []int) int {
-	instructions := make([]int, len(program))
-	copy(instructions, program)
+func software(instructions []int, input []int, programCounter int) (int, int) {
 
 	var outputString string
-	var programCounter int
 
 	for programCounter > -1 {
 		opCode := instructions[programCounter] % 100
@@ -88,6 +102,10 @@ func software(program []int, input []int) int {
 			instructions[instructions[programCounter+3]] = a * b
 			programCounter += 4 //Number of instructions
 		case 3:
+			if len(input) == 0 {
+				output, _ := strconv.Atoi(outputString)
+				return output, programCounter
+			}
 			instructions[instructions[programCounter+1]] = input[0]
 			programCounter += 2 //Number of instructions
 			input = input[1:]
@@ -125,5 +143,5 @@ func software(program []int, input []int) int {
 		}
 	}
 	output, _ := strconv.Atoi(outputString)
-	return output
+	return output, programCounter
 }
