@@ -29,7 +29,7 @@ func main() {
 			combination = "0" + combination
 		}
 
-		// We check that every digit compare at least one time (so just one time)
+		// We check that every digit compares at least one time (so just one time)
 		var countDigit [5]bool
 		for _, digit := range combination {
 			countDigit[digit-'0'] = true
@@ -64,7 +64,7 @@ func main() {
 			//otherwise we just have to pass him the current signal
 			for amplifier, phase := range combination {
 				if loop == 0 {
-					// We need new phases so we add 5 and the range change from [0-4] to [5-9]
+					// We need new phases so we add 5 and the range changes from [0-4] to [5-9]
 					signal, programCounters[amplifier] = software(amplifierSoftware[amplifier], []int{int(phase - '0' + 5), signal}, programCounters[amplifier])
 				} else {
 					signal, programCounters[amplifier] = software(amplifierSoftware[amplifier], []int{signal}, programCounters[amplifier])
