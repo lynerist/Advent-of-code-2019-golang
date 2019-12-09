@@ -18,7 +18,6 @@ func main() {
 		n, _ := strconv.Atoi(s)
 		instructions = append(instructions, n)
 	}
-	instructions = append(instructions, 0, 0)
 
 	// The number of combinations of 5 elements is the factorial 5! so we need 5! elements
 	const factorialNumberPhase = 5 * 4 * 3 * 2
