@@ -11,6 +11,7 @@ import (
 type asteroid struct{
 	x, y float64
 	m map[float64][2]bool
+	
 }
 
 func main(){
