@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"os"
 	"bufio"
-	"math"
 )
 
+//We need coordinates and a map from angular coefficient to number of asteroids seen on this stright line
+//(At most two so we can use a boolean array with len 2)
 type asteroid struct{
 	x, y float64
 	m map[float64][2]bool
@@ -14,52 +15,43 @@ type asteroid struct{
 
 func main(){
 
+	//We store the input, you can do go run program.go < input.txt
 	sc := bufio.NewScanner(os.Stdin)
-	var asts [][]bool
-	
 	var asteroids []asteroid
-
-	for{
+	for i:=0; sc.Text() != "" || i == 0; i++{
 		sc.Scan()
-		var asteroidsRow []bool
-		for i, ast := range sc.Text(){
+		for j, ast := range sc.Text(){
 			if ast == '#'{
-				asteroidsRow = append(asteroidsRow, true)
-				asteroids = append(asteroids, asteroid{float64(i),float64(len(asts)), make(map[float64][2]bool)})
-			}else{
-				asteroidsRow = append(asteroidsRow, false)
+				asteroids = append(asteroids, asteroid{float64(j),float64(i), make(map[float64][2]bool)})
 			}
 		}
-
-		if len(asteroidsRow) == 0{
-			break
-		}
-		asts = append(asts, asteroidsRow)
 	}
 
 	for i, a := range asteroids{
 		for j, as := range asteroids{
+			//If the asteroid is the same we don't have to do anything
 			if i == j{
 				continue
 			}
-
-			var h int
+			//We see if the asteroid is in a lower or upper position then the current one
+			var direction int
 			if a.y<as.y || (as.y == a.y && a.x<as.x){
-				h = 1
+				direction = 1
 			}
 
-			if (as.x-a.x) == 0{
-				temp := asteroids[i].m[float64(int(math.NaN()))]
-				temp[h] = true
-				asteroids[i].m[float64(int(math.NaN()))] = temp
-			}else{
-				temp := asteroids[i].m[(as.y-a.y)/(as.x-a.x)]
-				temp[h] = true
-				asteroids[i].m[(as.y-a.y)/(as.x-a.x)] = temp
+			// A value arbitrary to rappresent the NaN of the stright line without coefficent (where a.x-as.x == 0)
+			StraightLineCoefficent := 0.0101010101010101 
+
+			if (as.x-a.x) != 0{
+				StraightLineCoefficent = (as.y-a.y)/(as.x-a.x)
 			}
+			seenOnThisStraightLine := asteroids[i].m[StraightLineCoefficent]
+			seenOnThisStraightLine[direction] = true
+			asteroids[i].m[StraightLineCoefficent] = seenOnThisStraightLine
 		}
 	}
 
+	//Here we count the asteroids seen from each asteroid
 	var maxMonitored int
 	for _, a := range asteroids{
 		var countMonitored int
@@ -75,5 +67,5 @@ func main(){
 			maxMonitored = countMonitored
 		}
 	}
-	fmt.Println("\n\n",maxMonitored)
+	fmt.Println(maxMonitored)
 }
